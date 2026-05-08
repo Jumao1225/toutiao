@@ -181,12 +181,6 @@ Authorization: Bearer your_token_here
 
 更详细的请求参数与返回示例请查看 `API接口规范文档.md`。
 
-## 开发建议
-
-- 当前数据库与 Redis 配置为硬编码，建议改为环境变量（`.env`）。
-- 建议补充 `requirements.txt` 或 `pyproject.toml`，方便环境复现。
-- 建议新增自动化测试（`pytest`）与 CI 流程。
-
 ## 常见问题
 
 - 后端无法连接数据库：检查 `db_conf.py` 的连接串、PostgreSQL 用户密码与端口。
