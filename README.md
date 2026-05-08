@@ -17,6 +17,7 @@
 - 收藏：检查状态、添加、取消、列表、清空
 - 历史：添加、列表、删除单条、清空
 - 缓存：新闻分类与列表缓存（Redis）
+- AI问答：前端 `AIChat` 页面直连第三方大模型接口（可配 DeepSeek / DashScope）
 
 ## 目录结构
 
@@ -86,6 +87,14 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8000
 cd toutiao_frontend
 ```
 
+先配置环境变量（首次必做）：
+
+```bash
+cp .env.example .env
+```
+
+然后按实际填写 `.env`（见下方“前端环境变量配置”）。
+
 安装依赖并启动：
 
 ```bash
@@ -123,6 +132,24 @@ REDIS_HOST = "localhost"
 REDIS_PORT = 6379
 REDIS_DB = 0
 ```
+
+### 前端环境变量配置（含 AI 问答）
+
+文件：`toutiao_frontend/.env`
+
+可从模板复制：`toutiao_frontend/.env.example`
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000
+VITE_AI_API_ENDPOINT=https://api.deepseek.com/v1/chat/completions
+VITE_AI_API_KEY=your-api-key-here
+VITE_AI_MODEL=deepseek-chat
+```
+
+说明：
+- `VITE_AI_API_ENDPOINT` 必须是完整聊天接口路径，不能只填根域名。
+- `VITE_AI_API_KEY` 为敏感信息，不要提交到仓库。
+- 修改 `.env` 后需重启 `npm run dev` 才会生效。
 
 ## 认证与响应规范
 
@@ -186,6 +213,8 @@ Authorization: Bearer your_token_here
 - 后端无法连接数据库：检查 `db_conf.py` 的连接串、PostgreSQL 用户密码与端口。
 - 缓存不生效：确认 Redis 已启动，且 `redis_conf.py` 配置正确。
 - 前端请求失败：确认后端已启动在 `127.0.0.1:8000`，并检查浏览器网络请求详情。
+- AI 问答返回 404：通常是 `VITE_AI_API_ENDPOINT` 配置错误（例如只写了 `https://api.deepseek.com`），请改为完整路径 `https://api.deepseek.com/v1/chat/completions`。
+- AI 问答返回 401：检查 `VITE_AI_API_KEY` 是否正确、是否已过期、是否有模型调用权限。
 
 ## 调试入口
 

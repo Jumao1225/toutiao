@@ -117,13 +117,17 @@ const fetchAIResponse = async (userMessage) => {
     .map(msg => ({ role: msg.role, content: msg.content }));
   
   try {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey.value}`
+    };
+    if (apiEndpoint.value.includes('dashscope.aliyuncs.com')) {
+      headers['X-DashScope-SSE'] = 'enable';
+    }
+
     const response = await fetch(apiEndpoint.value, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey.value}`,
-        'X-DashScope-SSE': 'enable' // 添加阿里云DashScope所需的SSE头
-      },
+      headers,
       body: JSON.stringify({
         model: model.value,
         messages: allMessages,
